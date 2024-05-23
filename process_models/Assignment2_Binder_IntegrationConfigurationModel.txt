@@ -1,0 +1,15 @@
+Integration and Configuration Model
+
+I think that we should Integrate a Database Library such as SQLite and a GUI Library such as PyQT into our Python Program.
+
+My main concern when searching for a database is keeping it free to use for our school project. I
+looked into PostgreSQL and the cheapest option I found was elephantSQL but I would still
+rather not spend any money. I then stumbled upon SQLite which stores a database into a file
+which can then be uploaded to something like Google Drive. I found a
+Google-Python API called “PyDrive” that wraps Google Drive API into classes that can be used
+to upload our data to the cloud. I think this free option is something I will look more into in
+terms of feasibility and reliability. There are also many options with Python when it comes to
+creating a GUI. I'm not sure if we are supposed to make an online web-based GUI or if this is
+supposed to be a desktop application. I'm going to assume we are making a desktop application
+for now. I am looking into using PyQT as it has high reviews online and seems to have a lot of
+support with an easy to implement library in Python.
