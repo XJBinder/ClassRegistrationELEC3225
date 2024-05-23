@@ -1,0 +1,14 @@
+Waterfall Method
+
+1. Include system requirements from assignment description.
+
+2. Figure out the best method to implement a database and store user and course
+information. Make a blueprint for code including functions and what they do.
+Design a model user interface for the system.
+
+3. Implement the chosen database for user and course data, code classes with
+functions that do tasks, and build a user interface with backend logic. We will
+then test the system for any bugs that we can find.
+
+4. Monitor for any issues or new feedback to streamline the project. Update the
+system with any new requirements.
