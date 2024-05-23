@@ -1,0 +1,17 @@
+Incremental Development Model
+
+1. Classes and their methods should be developed and tested first.
+This is the backbone of our system and sets up a real framework for us to build
+off of. We can test it one method at a time making sure that everything does what
+it should to meet project requirements.
+
+2. Next we should implement a database and give our back-end the ability to store
+user and course data. This can be tested by sending the data from our back-end
+Python program to whatever we decide to use as our database and manually
+checking the database to confirm the data is being received.
+
+3. Lastly, we need to create a nice user interface to separate the user from the
+back-end Python program. We can test this by using the front-end program to
+control the back-end. If we are able to use all the methods from the front-end and
+send data to and from the database while meeting all project requirements the
+system can be declared completed.
