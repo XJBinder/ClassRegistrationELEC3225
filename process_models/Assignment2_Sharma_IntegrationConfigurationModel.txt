@@ -1,1 +1,28 @@
+Integration and Configuration Model
+
+1. Big Bang Integration
+Integrate all developed modules simultaneously after all parts of the system are developed.
+Conduct comprehensive system testing on the fully integrated system.
+In this case we would fully integrate all functionalities into one program, and we would test to ensure everything is working as it should be
+
+ 2. Bottom-Up Integration
+Develop and test lower-level modules first.
+Incrementally integrate lower-level modules to form higher-level subsystems.
+Use test drivers to simulate higher-level modules during development.
+Write and Test code for the lower level functions first, ensuring that they are working, next we use test drivers to test the higher level functions. 
+
+3. Top-Down Integration
+Start by developing and testing top-level modules.
+Use stubs to simulate lower-level modules that are not yet developed.
+Incrementally replace stubs with actual lower-level modules.
+In this case, we write and test code for the higher level functions first, then use test drivers to test the lower level functions that are not yet released
+
+4. Mixed Integration (Sandwiched Integration)
+Combine both top-down and bottom-up integration approaches.
+Develop and test top-level and low-level modules in parallel.
+Incrementally integrate modules from both ends until the system is fully integrated.
+
+
+
+In my opinion, the incremental model is the best model of the three to use. This model is generally referred to as the most flexible and effective tool for modern day software development. It is the best of the three because this model allows us to identify the components of the systems, and then integrate them one by one, instead of just programming the whole system at once. In turn, this also allows continuous user-feedback because as we integrate one part of the system, we can always show it to the client to ensure it is meeting their specifications or requirements. Especially in a big project, like the university scheduling system. It would be best to break down the process into multiple parts, and then tackle it one by one, making it well suited for a project that has evolving requirements. 
 
