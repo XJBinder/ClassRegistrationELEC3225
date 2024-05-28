@@ -1,1 +1,40 @@
+Waterfall Method:
+1. Feasibility Study:
+
+Evaluate the project’s viability.
+Assess technical, economic, legal, operational, and schedule feasibility.
+Produce a feasibility report to determine whether to proceed with the project.
+For the university scheduling system, we would meet with the university team to discuss what functionality they want and what we can provide
+
+2. Requirements Analysis:
+Gather and document all the requirements of the project.
+Understand what the stakeholders need from the software.
+Produce a requirements specification document.
+Finalize the functionality that the university needs for their program
+
+3. System Design:
+Define the architecture of the system.
+Create design specifications.
+Plan the hardware and system requirements.
+Create a basic prototype of the system and show the university to show that this is what a skeleton version of the system would look like
+
+4. Coding:
+Convert design specifications into actual code.
+Develop the software components based on the design.
+Perform unit testing to ensure individual components work correctly.
+Make the prototype functional by adding code, and ensuring that the system meets the university standards.
+
+5. Integration and Testing (or Verification):
+  Integrate all the individual software components.
+ Perform system testing to detect any issues or defects.
+Ensure that the software meets the requirements specified.
+Test to ensure that all specifications have been met
+
+6. Maintenance:
+Provide ongoing support and maintenance for the software
+Fix any issues or bugs that arise after deployment.
+Implement any necessary updates or enhancements.
+Fix any issues that the university or you as the programmer may have found after the coding is finished. 
+Each phase must be completed before the next one begins, and there is typically no overlapping between phases. This method is well-suited for projects where requirements are well-understood and unlikely to change significantly during development.
+
 
