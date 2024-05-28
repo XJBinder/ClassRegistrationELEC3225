@@ -1,2 +1,44 @@
 Integration and Configuration Model
 
+
+1. Finding Reusable Components:
+o Database: Use MySQL or PostgreSQL for user and course management.
+o User Interfaces: Utilize a web framework like Django or Flask.
+o Scheduling Algorithms: Incorporate existing algorithms for conflict-free scheduling
+if there are any.
+
+2. Configuring Components:
+o Set up the database for users and courses.
+o Customize the web framework to handle user interactions and scheduling logic.
+
+3. Integrate Components:
+o Connect the database with the web application.
+Assignment #2 Part 1 | Mershon, Carson P
+o Ensure seamless interaction between user management, course catalog, and
+scheduling functionalities.
+
+---------------------------------------------------------
+Rough Idea:
+
+Database:
+• MySQL: A popular open-source relational database management system that can be used
+to manage the user and course data. Citation: MySQL Official Website
+
+Web Framework:
+• Django: A high-level Python web framework that encourages rapid development and clean,
+pragmatic design. It is suitable for developing the user interfaces and backend logic of the
+scheduling system. Citation: Django Project
+
+Scheduling Algorithms:
+• Utilizing existing algorithms for conflict-free scheduling, which can be integrated into the
+system to manage course scheduling efficiently. Citation: Scheduling Algorithms in Python
+
+User Interface Components:
+• Bootstrap: A free and open-source CSS framework directed at responsive, mobile-first
+front-end web development. It can be used to design the user interfaces for students,
+instructors, and admin. Citation: Bootstrap
+
+Authentication and Authorization:
+• OAuth2: An open standard for access delegation, commonly used to grant websites or
+applications limited access to user information without exposing passwords. This can be
+used to manage user authentication. Citation: OAuth 2.0
