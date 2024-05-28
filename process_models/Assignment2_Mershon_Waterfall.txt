@@ -1,2 +1,25 @@
 Waterfall Method
 
+1. Requirements Analysis:
+o Identify user needs: students, instructors, and admin requirements.
+o Specify functionalities: course registration, viewing schedules, managing
+courses/users.
+
+2. System Design:
+o Create a database schema for users and courses.
+o Design user interfaces for each type of user.
+
+3. Implementation:
+o Develop the database and its interactions.
+o Code the user interfaces and functionalities.
+
+4. Integration and Testing:
+o Integrate database with user interfaces.
+o Test each functionality: registration, course management, schedule printing.
+
+5. Deployment:
+o Deploy the system on a server accessible to university stakeholders.
+
+6. Maintenance:
+o Monitor system performance.
+o Fix bugs and update features based on user feedback.
