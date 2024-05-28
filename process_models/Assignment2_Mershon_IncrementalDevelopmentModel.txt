@@ -1,2 +1,16 @@
 Incremental Development Model
 
+1. Requirements Analysis:
+o Define core functionalities: user management, course catalog.
+
+2. Design & Development Increment:
+o Develop user management subsystem (student, instructor, admin).
+o Test by creating, updating, and deleting users.
+
+3. Testing Increment:
+o Add course catalog functionality.
+o Test by adding, searching, and editing courses.
+
+4. Implementation:
+o Implement schedule management: registration, viewing schedules.
+o Evaluate by simulating registration and printing schedules.
