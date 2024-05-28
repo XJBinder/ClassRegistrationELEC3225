@@ -1,1 +1,29 @@
+Incremental Development Model
+
+1. Requirement Analysis and Specification:
+Identify and gather the requirements for the entire system.
+Break down the requirements into smaller, prioritized chunks or increments.
+Document the requirements for each increment separately.
+With the university team, identify the requirements for the system
+
+2. Design and Development:
+For each increment, perform detailed design based on the specific requirements of that increment.
+Develop the software for the increment, focusing on building a functional subset of the overall system.
+Ensure that each increment is a standalone module that integrates with previously developed increments.
+Create each part of the program one by one, by planning and executing with your team.
+
+3. Testing and Verification:
+Test each increment individually to ensure it meets the specified requirements and integrates correctly with the existing system.
+Perform unit testing, integration testing, and system testing for each increment.
+Address any defects or issues identified during testing.
+Verify that each increment being tested is fully functional and will work with the other parts being incremented in. 
+
+4. Deployment and Feedback:
+Deploy each increment to the user environment, ensuring it is correctly installed and configured.
+Gather feedback from users on the deployed increment to identify any issues or additional requirements.
+Use the feedback to refine and improve future increments, ensuring continuous improvement of the software.
+With the university, determine whether each increment was fully functional with the other parts, and address solutions if needed. 
+
+In the first subsystem, I would simply create the skeleton for the program, making classes and using inheritance to define the instructor, student and administrator, each giving them their respective functionality. Next in the second subsystem, I would try to integrate, instructor availability and even room availability. Lastly, in the final version I would go about implementing features such as automated conflict resolution when scheduling, which would give the student another alternative if there is a time conflict with classes. These phases are repeated for each increment until the entire system is complete. This approach allows for early delivery of functional software, facilitates user feedback, and enables adjustments to be made throughout the development process. 
+
 
