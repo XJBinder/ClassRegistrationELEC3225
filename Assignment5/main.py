@@ -1,9 +1,10 @@
 import sqlite3
 
-def create_tables():
-    conn = sqlite3.connect('assignment3.db')
+
+def create_COURSE_table():
+    conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
-# Create new table called "COURSE"
+    # Create new table called "COURSE"
     cursor.execute('''CREATE TABLE IF NOT EXISTS COURSE (
         CRN INTEGER PRIMARY KEY,
         TITLE TEXT NOT NULL,
@@ -12,18 +13,86 @@ def create_tables():
         DAYS TEXT NOT NULL,
         SEMESTER TEXT NOT NULL,
         YEAR INTEGER NOT NULL,
-        CREDITS INTEGER NOT NULL
-    )''')
+        CREDITS INTEGER NOT NULL)''')
 
     conn.commit()
     conn.close()
 
+
+def create_USER_table():
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    # Create new table called "USER"
+    cursor.execute('''CREATE TABLE IF NOT EXISTS USER (
+        WENTWORTHID INTEGER PRIMARY KEY,
+        FIRSTNAME TEXT NOT NULL,
+        LASTNAME TEXT NOT NULL,
+        PASSWORD TEXT NOT NULL)''')
+
+    conn.commit()
+    conn.close()
+
+
+def create_STUDENT_table():
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    # Create new table called "STUDENT"
+    cursor.execute('''CREATE TABLE IF NOT EXISTS STUDENT (
+        WENTWORTHID INTEGER PRIMARY KEY,
+        FIRSTNAME TEXT NOT NULL,
+        LASTNAME TEXT NOT NULL,
+        PASSWORD TEXT NOT NULL,
+        COURSES TEXT,
+        GRADYEAR INTEGER,
+        MAJOR TEXT,
+        EMAIL TEXT)''')
+
+    conn.commit()
+    conn.close()
+
+
+def create_ADMIN_table():
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    # Create new table called "ADMIN"
+    cursor.execute('''CREATE TABLE IF NOT EXISTS ADMIN (
+        WENTWORTHID INTEGER PRIMARY KEY,
+        FIRSTNAME TEXT NOT NULL,
+        LASTNAME TEXT NOT NULL,
+        PASSWORD TEXT NOT NULL,
+        TITLE TEXT,
+        OFFICE TEXT,
+        EMAIL TEXT)''')
+
+    conn.commit()
+    conn.close()
+
+
+def create_INSTRUCTOR_table():
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    # Create new table called "INSTRUCTOR"
+    cursor.execute('''CREATE TABLE IF NOT EXISTS INSTRUCTOR (
+        WENTWORTHID INTEGER PRIMARY KEY,
+        FIRSTNAME TEXT NOT NULL,
+        LASTNAME TEXT NOT NULL,
+        PASSWORD TEXT NOT NULL,
+        DEPARTMENT TEXT,
+        HIREYEAR INTEGER,
+        TITLE TEXT,
+        EMAIL TEXT)''')
+
+    conn.commit()
+    conn.close()
+
+
 # Creating User Class
 class User:
-    def __init__(self, first_name, last_name, wentworthID):
+    def __init__(self, first_name, last_name, wentworthID, password):
         self.first_name = first_name
         self.last_name = last_name
         self.wentworthID = wentworthID
+        self.password = password
 
     def set_first_name(self, first_name):
         self.first_name = first_name
@@ -33,6 +102,9 @@ class User:
 
     def set_wentworthID(self, wentworthID):
         self.wentworthID = wentworthID
+
+    def set_password(self, password):
+        self.password = password
 
     def show_all_info(self):
         return 'Firstname:{}, Lastname:{}, Wentworth ID:{},'.format(self.first_name, self.last_name, self.wentworthID)
@@ -52,70 +124,90 @@ class Student(User):
 
 # Creating Instructor Class
 class Instructor(User):
-    # Overwriting User Classes Wentworth ID Attribute
-    def __init__(self, first_name, last_name, wentworthID=None):
-        super().__init__(first_name, last_name, wentworthID)
+    def __init__(self, first_name, last_name, wentworthID, password, department=None, hire_year=None, email=None):
+        super().__init__(first_name, last_name, wentworthID, password)
+        self.department = department
+        self.hire_year = hire_year
+        self.email = email
 
-        # Sets wentworthID to "N/A" if no wentworthID is given as parameter
-        if wentworthID is None:
-            self.wentworthID = 'N/A'
+        if department is None:
+            self.department = 'N/A'
 
-    def show_schedule(self):
-        print('\nInstructor Print Schedule Method')
+        if hire_year is None:
+            self.hire_year = 'N/A'
 
-    def show_class_list(self):
-        print('\nInstructor Print Class List Method')
-
-    def search_course(self):
-        print('\nInstructor Search Course Method')
+        if email is None:
+            self.email = 'N/A'
 
 
 # Creating Admin Class
 class Admin(User):
-    # Overwriting User Classes Wentworth ID Attribute
-    def __init__(self, first_name, last_name, wentworthID=None):
-        super().__init__(first_name, last_name, wentworthID)
+    def __init__(self, first_name, last_name, wentworthID, password, title=None, office=None, email=None):
+        super().__init__(first_name, last_name, wentworthID, password)
+        self.title = title
+        self.office = office
+        self.email = email
 
-        # Sets wentworthID to "N/A" if no wentworthID is given as parameter
-        if wentworthID is None:
-            self.wentworthID = 'N/A'
+        if title is None:
+            self.title = 'N/A'
 
-    def add_course(crn, title, department, time, days, semester, year, credits):
-        db = sqlite3.connect('assignment3.db')
-        cursor = db.cursor()
+        if office is None:
+            self.office = 'N/A'
+
+        if email is None:
+            self.email = 'N/A'
+
+    def add_course(self, crn, title, department, time, days, semester, year, credits):
+        conn = sqlite3.connect('database.db')
+        cursor = conn.cursor()
         cursor.execute("INSERT INTO COURSE VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
                        (crn, title, department, time, days, semester, year, credits))
-        db.commit()
-        db.close()
+        conn.commit()
+        conn.close()
         print(f"Course {title} added.")
 
-    def remove_course(self):
-        print('\nAdmin Remove Course Method')
-
-    def add_user(first_name, last_name, wentworthID):
-        conn = sqlite3.connect('assignment3.db')
+    def remove_course(self, crn):
+        conn = sqlite3.connect('database.db')
         cursor = conn.cursor()
-        cursor.execute("INSERT INTO USER VALUES (?, ?, ?)",
-                       (first_name, last_name, wentworthID))
+        cursor.execute("DELETE FROM COURSE WHERE CRN = ?", (crn,))
+        conn.commit()
+        conn.close()
+        print(f"Course with CRN {crn} removed.")
+
+    def add_user(self, wentworthID, first_name, last_name, password):
+        conn = sqlite3.connect('database.db')
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO USER VALUES (?, ?, ?, ?)",
+                       (wentworthID, first_name, last_name, password))
         conn.commit()
         conn.close()
 
-    def remove_user(self):
-        print('\nAdmin Remove User Method')
+    def remove_user(self, wentworthID):
+        conn = sqlite3.connect('database.db')
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM USER WHERE WENTWORTHID = ?", (wentworthID,))
+        conn.commit()
+        conn.close()
+        print(f"User with Wentworth ID: {wentworthID} removed.")
 
-    def add_student(student_id, first_name, last_name, grad_year, major, email):
-        conn = sqlite3.connect('assignment3.db')
+    def add_student(self, student_id, first_name, last_name, grad_year, major, email):
+        conn = sqlite3.connect('database.db')
         cursor = conn.cursor()
         cursor.execute("INSERT INTO STUDENT VALUES (?, ?, ?, ?, ?, ?)",
                        (student_id, first_name, last_name, grad_year, major, email))
         conn.commit()
         conn.close()
 
-    def remove_student(self):
-        print('\nAdmin Remove Student Method') # From Course
+    def remove_student(self, wentworthID):
+        conn = sqlite3.connect('database.db')
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM STUDENT WHERE WENTWORTHID = ?", (wentworthID,))
+        conn.commit()
+        conn.close()
+        print(f"Student with Wentworth ID: {wentworthID} removed.")
 
-    def query_students():
-        conn = sqlite3.connect('assignment3.db')
+    def query_students(self):
+        conn = sqlite3.connect('database.db')
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM STUDENT")
         students = cursor.fetchall()
@@ -123,8 +215,8 @@ class Admin(User):
             print(student)
         conn.close()
 
-    def query_instructors():
-        conn = sqlite3.connect('assignment3.db')
+    def query_instructors(self):
+        conn = sqlite3.connect('database.db')
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM INSTRUCTOR")
         instructors = cursor.fetchall()
@@ -132,8 +224,8 @@ class Admin(User):
             print(instructor)
         conn.close()
 
-    def query_admins():
-        conn = sqlite3.connect('assignment3.db')
+    def query_admins(self):
+        conn = sqlite3.connect('database.db')
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM ADMIN")
         admins = cursor.fetchall()
@@ -153,21 +245,25 @@ class Admin(User):
     def show_course(self):
         print('\nAdmin Print Course Method')
 
-    def update_admin():
-        admin_id = int(input("Enter Admin ID: "))
-        new_title = input("Enter the new title: ")
-
-        conn = sqlite3.connect('assignment3.db')
+    def update_admin(self, admin_id, new_title):
+        conn = sqlite3.connect('database.db')
         cursor = conn.cursor()
         cursor.execute("UPDATE ADMIN SET TITLE = ? WHERE ID = ?", (new_title, admin_id))
         conn.commit()
         conn.close()
         print(f"Admin with ID {admin_id} updated to {new_title}.")
 
-    def remove_instructor(instructor_id):
-        conn = sqlite3.connect('assignment3.db')
+    def remove_instructor(self, instructor_id):
+        conn = sqlite3.connect('database.db')
         cursor = conn.cursor()
         cursor.execute("DELETE FROM INSTRUCTOR WHERE ID = ?", (instructor_id,))
         conn.commit()
         conn.close()
         print(f"Instructor with ID {instructor_id} removed.")
+
+
+create_COURSE_table()
+create_USER_table()
+create_STUDENT_table()
+create_INSTRUCTOR_table()
+create_ADMIN_table()
