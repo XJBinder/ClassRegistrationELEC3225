@@ -86,6 +86,64 @@ def create_INSTRUCTOR_table():
     conn.close()
 
 
+def main_menu():
+    while True:
+        try:
+            print("\nMain Menu:")
+            print("Welcome to Leopard Web Class Registration Software")
+            print("1. Login")
+            print("2. Create Account")
+            choice = input("Enter your Choice: ")
+
+            # TEMPORARY VALUES (change this value to test different user menu options)
+            user = 0  # USER = 0, STUDENT = 1, INSTRUCTOR = 2, ADMIN = 3
+
+            if choice == '1':
+                print("Do some LOGIN stuff")
+
+                # ask for Wentworth ID
+                # determine if ADMIN, USER, INSTRUCTOR, STUDENT
+                # create object based on query
+                #
+            elif choice == '2':
+                print("Do some CREATE account stuff n things n such.")
+            else:
+                print("Invalid Entry")
+
+            if user == 0: # USER
+                print("USER MENU ITEMS")
+            elif user == 1: # STUDENT
+                print("STUDENT MENU ITEMS")
+            elif user == 2: # INSTRUCTOR
+                print("INSTRUCTOR MENU ITEMS")
+            elif user == 3: # ADMIN
+                print("ADMIN MENU ITEMS")
+                
+        except Exception as e:
+            print(f"An error occurred: {e}")
+        finally:
+            input("Press Enter to continue...")
+
+
+
+
+# Welcome
+# Login or Create Account
+# If Login: Enter Wentworth ID and Password
+
+# If Create Account: Enter First Name, Last Name, Wentworth ID, Password, and Account Type
+# Account Types: Parent/Other, Student, Instructor, Admin
+# If Student: Enter Graduation Year, Major, and Email
+# If Instructor: Enter Department, Hire Year, and Email
+# If Admin: Enter Title, Office, and Email
+
+# If Student: Search Course, Add Course, Drop Course, Show Schedule
+# If Instructor: Search Roster, Show Roster, Search Course, Show Course
+# If Admin: Search Roster, Show Roster, Search Course, Show Course, Add Course, Remove Course, Add User,
+# Remove User, Add Student, Remove Student, Query Students, Query Instructors, Query Admins, Update Admin,
+# Remove Instructor
+
+
 # Creating User Class
 class User:
     def __init__(self, first_name, last_name, wentworthID, password):
@@ -268,11 +326,20 @@ class Admin(User):
         conn.close()
         print(f"Admin with Wentworth ID: {wentworthID} removed.")
 
+    def query_courses(self):
+        conn = sqlite3.connect("database.db")
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM COURSE")
+        courses = cursor.fetchall()
+        for course in courses:
+            print(course)
+        conn.close()
+
     def query_users(self):
         conn = sqlite3.connect('database.db')
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM USER")
-        admins = cursor.fetchall()
+        users = cursor.fetchall()
         for user in users:
             print(user)
         conn.close()
@@ -304,8 +371,42 @@ class Admin(User):
             print(admin)
         conn.close()
 
-    def search_roster(self):
-        print('\nAdmin Search Roster Method')
+    def search_roster(self, crn):
+        conn = sqlite3.connect('database.db')
+        cursor = conn.cursor()
+
+        # Find the course with the given CRN
+        cursor.execute("SELECT * FROM COURSE WHERE CRN = ?", (crn,))
+        course = cursor.fetchone()
+        if course is None:
+            print(f"No course found with CRN {crn}")
+            return
+        else:
+            title = course[1]
+            print(f"{title} Roster Search:")
+            wentworthID = input("Enter Wentworth ID:")
+
+        # Find the student with the given WentworthID
+        cursor.execute("SELECT * FROM STUDENT WHERE WENTWORTHID = ?", (wentworthID,))
+        student = cursor.fetchone()
+        if student is not None:
+            student_obj = Student(student[1], student[2], student[0], student[3], student[4], student[5],
+                                  student[6], student[7])
+            print(student_obj.show_all_info())
+            return
+
+        # Find the instructor with the given WentworthID
+        cursor.execute("SELECT * FROM INSTRUCTOR WHERE WENTWORTHID = ?", (wentworthID,))
+        instructor = cursor.fetchone()
+        if instructor is not None:
+            instructor_obj = Instructor(instructor[1], instructor[2], instructor[0], instructor[3], instructor[4],
+                                        instructor[5], instructor[6], instructor[7])
+            print(instructor_obj.show_all_info())
+            return
+
+        print(f"No user found with Wentworth ID {wentworthID}")
+
+        conn.close()
 
     def print_roster(self, crn):
         conn = sqlite3.connect('database.db')
@@ -354,12 +455,16 @@ class Admin(User):
 
         conn.close()
 
-    def search_course(title=None, day=None, time=None):
+    def search_course(crn=None, title=None, day=None, time=None):
         conn = sqlite3.connect('database.db')
         cursor = conn.cursor()
 
         query = "SELECT * FROM COURSE WHERE 1"
         params = []
+
+        if crn is not None:
+            query += " AND CRN LIKE ?"
+            params.append( '%' + crn + '%')
 
         if title is not None:
             query += " AND TITLE LIKE ?"
@@ -381,9 +486,6 @@ class Admin(User):
 
         conn.close()
 
-    def show_course(self):
-        print('\nAdmin Print Course Method')
-
     def update_admin(self, admin_id, new_title):
         conn = sqlite3.connect('database.db')
         cursor = conn.cursor()
@@ -391,6 +493,9 @@ class Admin(User):
         conn.commit()
         conn.close()
         print(f"Admin with ID {admin_id} updated to {new_title}.")
+
+        conn.commit()
+        conn.close()
 
     def remove_instructor(self, instructor_id):
         conn = sqlite3.connect('database.db')
@@ -400,6 +505,11 @@ class Admin(User):
         conn.close()
         print(f"Instructor with ID {instructor_id} removed.")
 
+        conn.commit()
+        conn.close()
+
+
+
 
 create_COURSE_table()
 create_USER_table()
@@ -407,20 +517,4 @@ create_STUDENT_table()
 create_INSTRUCTOR_table()
 create_ADMIN_table()
 
-# Welcome
-# Login or Create Account
-# If Login: Enter Wentworth ID and Password
-
-# If Create Account: Enter First Name, Last Name, Wentworth ID, Password, and Account Type
-# Account Types: Parent/Other, Student, Instructor, Admin
-# If Student: Enter Graduation Year, Major, and Email
-# If Instructor: Enter Department, Hire Year, and Email
-# If Admin: Enter Title, Office, and Email
-
-# If Student: Search Course, Add/Drop Course, Show Schedule
-# If Instructor: Search Roster, Show Roster, Search Course, Show Course
-# If Admin: Search Roster, Show Roster, Search Course, Show Course, Add Course, Remove Course, Add User,
-# Remove User, Add Student, Remove Student, Query Students, Query Instructors, Query Admins, Update Admin,
-# Remove Instructor
-
-#
+main_menu()
