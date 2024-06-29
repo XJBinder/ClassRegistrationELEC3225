@@ -227,16 +227,54 @@ def main_menu():
                 print("Invalid Entry")
 
             if user == 0:  # USER
-                print("Ayushhs USER MENU ITEMS")
+                print("USER MENU ITEMS")
+                print("1. Search Course")
+                print("2. Show User Info")
+                print("3. Change Password")
                 # Search Course, Show User Info, change password
             elif user == 1:  # STUDENT
-                print("Ayushhs STUDENT MENU ITEMS")
+                print("STUDENT MENU ITEMS")
+                print("1. Search Course")
+                print("2. Add Course")
+                print("3. Drop Course")
+                print("4. Show Schedule")
+                print("5. Show Course")
+                print("6. Show User Info")
+                print("7. Change Password")
                 # Search Course, Add Course, Drop Course, Show Schedule, show course, show user info, change password
             elif user == 2:  # INSTRUCTOR
-                print("Ayushhs INSTRUCTOR MENU ITEMS")
+                print("INSTRUCTOR MENU ITEMS")
+                print("1. Search Roster")
+                print("2. Show Roster")
+                print("3. Seach Course")
+                print("4. Show Course")
+                print("5. Show Schedule")
+                print("6. Show User Info")
+                print("7. Change Password")
                 # Search Roster, Show Roster, Search Course, Show Course, show schedule, show user info, change password
             elif user == 3:  # ADMIN
-                print("Ayushhs ADMIN MENU ITEMS")
+                print("ADMIN MENU ITEMS")
+                print("1. Search Roster")
+                print("2. Show Roster")
+                print("3. Search Course")
+                print("4. Show Course")
+                print("5. Add Course")
+                print("6, Remove Course")
+                print("7. Add User")
+                print("8. Remove User")
+                print("9. Add Student")
+                print("10. Remove Student")
+                print("11. Add Instructor")
+                print("12. Remove Instructor")
+                print("13. Add Admin")
+                print("14. Remove Admin")
+                print("15. Query Users")
+                print("16. Query Students")
+                print("17. Query Instructors")
+                print("18. Query Admins")
+                print("19. Update Admin")
+                print("20. Show User Info")
+                print("21. Change Password")
             # Search Roster, Show Roster, Search Course, Show Course, Add Course, Remove Course, Add User,
             # Remove User, Add Student, Remove Student, Add Instructor, Remove Instructor, Add Admin, Remove Admin,
             # Query Users, Query Students, Query Instructors, Query Admins, Update Admin, show user info,
