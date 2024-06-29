@@ -86,62 +86,172 @@ def create_INSTRUCTOR_table():
     conn.close()
 
 
+def login(wentworthID, password):
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    # List of tables to check
+    tables = ['USER', 'STUDENT', 'INSTRUCTOR', 'ADMIN']
+    account_exists = False
+
+    for table in tables:
+        cursor.execute(f"SELECT * FROM {table} WHERE WENTWORTHID = ?", (wentworthID,))
+        account = cursor.fetchone()
+
+        if account is not None:
+            account_exists = True
+            if account[3] != password:
+                print("Password Incorrect")
+                break
+            else:
+                print(f"Logged in as {account[1]}")
+                return account, table
+
+    if not account_exists:
+        print("Account does not exist")
+
+    conn.close()
+
+
 def main_menu():
+    run_menu = True
+    user = 4  # A Number that is not 0, 1, 2, or 3
+
     while True:
         try:
-            print("\nMain Menu:")
-            print("Welcome to Leopard Web Class Registration Software")
-            print("1. Login")
-            print("2. Create Account")
+            if run_menu:
+                run_menu = False
+                print("-----Main Menu-----")
+                print("---Welcome to Leopard Web Class Registration Software---")
+                print("1. Login")
+                print("2. Create Account")
+
             choice = input("Enter your Choice: ")
 
-            # TEMPORARY VALUES (change this value to test different user menu options)
-            user = 0  # USER = 0, STUDENT = 1, INSTRUCTOR = 2, ADMIN = 3
-
             if choice == '1':
-                print("Do some LOGIN stuff")
+                print("---Login---")
+                wentworthID = input("Enter your Wentworth ID: ")
+                password = input("Enter your Password: ")
+                fetched_account, fetched_account_type = login(wentworthID, password)
 
-                # ask for Wentworth ID
-                # determine if ADMIN, USER, INSTRUCTOR, STUDENT
-                # create object based on query
-                #
+                if fetched_account_type == 'USER':
+                    user = 0
+                    user_object = User(fetched_account[1], fetched_account[2], fetched_account[0], fetched_account[3])
+                elif fetched_account_type == 'STUDENT':
+                    user = 1
+                    user_object = Student(fetched_account[1], fetched_account[2], fetched_account[0],
+                                          fetched_account[3], fetched_account[4], fetched_account[5],
+                                          fetched_account[6], fetched_account[7])
+                elif fetched_account_type == 'INSTRUCTOR':
+                    user = 2
+                    user_object = Instructor(fetched_account[1], fetched_account[2], fetched_account[0],
+                                             fetched_account[3], fetched_account[4], fetched_account[5],
+                                             fetched_account[6], fetched_account[7])
+                elif fetched_account_type == 'ADMIN':
+                    user = 3
+                    user_object = Admin(fetched_account[1], fetched_account[2], fetched_account[0],
+                                        fetched_account[3], fetched_account[4], fetched_account[5],
+                                        fetched_account[6])
             elif choice == '2':
-                print("Do some CREATE account stuff n things n such.")
+                print("---Account Type---")
+                print("1. Student")
+                print("2. Instructor")
+                print("3. Admin")
+                print("4. Parent/Other (User)")
+                while True:
+                    try:
+                        account_type = int(input("Enter a number: "))
+                        if not 1 <= account_type <= 4:
+                            print("Invalid Entry")
+                            continue
+                        else:
+                            break
+                    except ValueError:
+                        print("Invalid Entry")
+
+                # If User is Selected
+                if account_type == 4:
+                    # Ask for firstname, lastname, Wentworth ID, Password
+                    user = 0
+                    first_name = input("Enter your First Name: ")
+                    last_name = input("Enter your Last Name: ")
+                    wentworthID = input("Enter your Wentworth ID: ")
+                    password = input("Enter your Password: ")
+
+                    # CREATE USER OBJECT
+
+                # If Student is Selected
+                elif account_type == 1:
+                    # Ask for firstname, lastname, wentworth ID, password, Graduation Year, Major, Email
+                    user = 1
+                    first_name = input("Enter your First Name: ")
+                    last_name = input("Enter your Last Name: ")
+                    wentworthID = input("Enter your Wentworth ID: ")
+                    password = input("Enter your Password: ")
+                    grad_year = input("Enter your Graduation Year: ")
+                    major = input("Enter your Major: ")
+                    email = input("Enter your Email: ")
+
+                    # CREATE STUDENT OBJECT
+
+                # If Instructor is Selected
+                elif account_type == 2:
+                    # Ask for firstname, lastname, wentworth ID, password, Department, Hire Year, Title, Email
+                    user = 2
+                    first_name = input("Enter your First Name: ")
+                    last_name = input("Enter your Last Name: ")
+                    wentworthID = input("Enter your Wentworth ID: ")
+                    password = input("Enter your Password: ")
+                    department = input("Enter your Department: ")
+                    hire_year = input("Enter your Hire Year: ")
+                    title = input("Enter your Title: ")
+                    email = input("Enter your Email: ")
+
+                    # CREATE INSTRUCTOR OBJECT
+
+                # If Admin is Selected
+                elif account_type == 3:
+                    # Ask for firstname, lastname, wentworth ID, password, Title, Office, Email
+                    user = 3
+                    first_name = input("Enter your First Name: ")
+                    last_name = input("Enter your Last Name: ")
+                    wentworthID = input("Enter your Wentworth ID: ")
+                    password = input("Enter your Password: ")
+                    title = input("Enter your Title: ")
+                    office = input("Enter your Office: ")
+                    email = input("Enter your Email: ")
+
+                    # CREATE ADMIN OBJECT
+
             else:
                 print("Invalid Entry")
 
-            if user == 0: # USER
-                print("USER MENU ITEMS")
-            elif user == 1: # STUDENT
-                print("STUDENT MENU ITEMS")
-            elif user == 2: # INSTRUCTOR
-                print("INSTRUCTOR MENU ITEMS")
-            elif user == 3: # ADMIN
-                print("ADMIN MENU ITEMS")
-                
+            if user == 0:  # USER
+                print("Ayushhs USER MENU ITEMS")
+                # Search Course, Show User Info, change password
+            elif user == 1:  # STUDENT
+                print("Ayushhs STUDENT MENU ITEMS")
+                # Search Course, Add Course, Drop Course, Show Schedule, show course, show user info, change password
+            elif user == 2:  # INSTRUCTOR
+                print("Ayushhs INSTRUCTOR MENU ITEMS")
+                # Search Roster, Show Roster, Search Course, Show Course, show schedule, show user info, change password
+            elif user == 3:  # ADMIN
+                print("Ayushhs ADMIN MENU ITEMS")
+            # Search Roster, Show Roster, Search Course, Show Course, Add Course, Remove Course, Add User,
+            # Remove User, Add Student, Remove Student, Add Instructor, Remove Instructor, Add Admin, Remove Admin,
+            # Query Users, Query Students, Query Instructors, Query Admins, Update Admin, show user info,
+            # change password
+
+                                                ## AYUSH ##
+            #       Im not sure is this is everything we need to do.. if you could check the requirements and add more
+            #         if needed that would be sweet.. im thinking I will need to add more functions to the classes so
+            #         dont worry about checking to see if they are all there.. just add based on the assignment doc
+            #         and add those print statements to the menu items, thanks cutie <3
+
         except Exception as e:
             print(f"An error occurred: {e}")
         finally:
             input("Press Enter to continue...")
-
-
-
-
-# Welcome
-# Login or Create Account
-# If Login: Enter Wentworth ID and Password
-
-# If Create Account: Enter First Name, Last Name, Wentworth ID, Password, and Account Type
-# Account Types: Parent/Other, Student, Instructor, Admin
-# If Student: Enter Graduation Year, Major, and Email
-# If Instructor: Enter Department, Hire Year, and Email
-# If Admin: Enter Title, Office, and Email
-
-# If Student: Search Course, Add Course, Drop Course, Show Schedule
-# If Instructor: Search Roster, Show Roster, Search Course, Show Course
-# If Admin: Search Roster, Show Roster, Search Course, Show Course, Add Course, Remove Course, Add User,
-# Remove User, Add Student, Remove Student, Query Students, Query Instructors, Query Admins, Update Admin,
-# Remove Instructor
 
 
 # Creating User Class
@@ -167,10 +277,42 @@ class User:
     def show_all_info(self):
         return 'Firstname:{}, Lastname:{}, Wentworth ID:{},'.format(self.first_name, self.last_name, self.wentworthID)
 
+    def search_course(crn=None, title=None, day=None, time=None):
+        conn = sqlite3.connect('database.db')
+        cursor = conn.cursor()
+
+        query = "SELECT * FROM COURSE WHERE 1"
+        params = []
+
+        if crn is not None:
+            query += " AND CRN LIKE ?"
+            params.append('%' + crn + '%')
+
+        if title is not None:
+            query += " AND TITLE LIKE ?"
+            params.append('%' + str(title) + '%')
+
+        if day is not None:
+            query += " AND DAYS LIKE ?"
+            params.append('%' + day + '%')
+
+        if time is not None:
+            query += " AND TIME LIKE ?"
+            params.append('%' + time + '%')
+
+        cursor.execute(query, params)
+
+        courses = cursor.fetchall()
+        for course in courses:
+            print(course)
+
+        conn.close()
+
 
 # Creating Student Class
 class Student(User):
-    def __init__(self, first_name, last_name, wentworthID, password, courses=None, grad_year=None, major=None, email=None):
+    def __init__(self, first_name, last_name, wentworthID, password, courses=None, grad_year=None, major=None,
+                 email=None):
         super().__init__(first_name, last_name, wentworthID, password)
         self.courses = courses
         self.grad_year = grad_year
@@ -189,9 +331,6 @@ class Student(User):
         if email is None:
             self.email = 'N/A'
 
-    def search_course(self):
-        print('\nStudent Search Course Method')
-
     def add_course(self):
         print('\nStudent Add Course Method')
 
@@ -204,7 +343,8 @@ class Student(User):
 
 # Creating Instructor Class
 class Instructor(User):
-    def __init__(self, first_name, last_name, wentworthID, password, department=None, hire_year=None, title=None, email=None):
+    def __init__(self, first_name, last_name, wentworthID, password, department=None, hire_year=None, title=None,
+                 email=None):
         super().__init__(first_name, last_name, wentworthID, password)
         self.department = department
         self.hire_year = hire_year
@@ -455,37 +595,6 @@ class Admin(User):
 
         conn.close()
 
-    def search_course(crn=None, title=None, day=None, time=None):
-        conn = sqlite3.connect('database.db')
-        cursor = conn.cursor()
-
-        query = "SELECT * FROM COURSE WHERE 1"
-        params = []
-
-        if crn is not None:
-            query += " AND CRN LIKE ?"
-            params.append( '%' + crn + '%')
-
-        if title is not None:
-            query += " AND TITLE LIKE ?"
-            params.append('%' + str(title) + '%')
-
-        if day is not None:
-            query += " AND DAYS LIKE ?"
-            params.append('%' + day + '%')
-
-        if time is not None:
-            query += " AND TIME LIKE ?"
-            params.append('%' + time + '%')
-
-        cursor.execute(query, params)
-
-        courses = cursor.fetchall()
-        for course in courses:
-            print(course)
-
-        conn.close()
-
     def update_admin(self, admin_id, new_title):
         conn = sqlite3.connect('database.db')
         cursor = conn.cursor()
@@ -497,24 +606,12 @@ class Admin(User):
         conn.commit()
         conn.close()
 
-    def remove_instructor(self, instructor_id):
-        conn = sqlite3.connect('database.db')
-        cursor = conn.cursor()
-        cursor.execute("DELETE FROM INSTRUCTOR WHERE ID = ?", (instructor_id,))
-        conn.commit()
-        conn.close()
-        print(f"Instructor with ID {instructor_id} removed.")
 
-        conn.commit()
-        conn.close()
+if __name__ == '__main__':
+    create_COURSE_table()
+    create_USER_table()
+    create_STUDENT_table()
+    create_INSTRUCTOR_table()
+    create_ADMIN_table()
 
-
-
-
-create_COURSE_table()
-create_USER_table()
-create_STUDENT_table()
-create_INSTRUCTOR_table()
-create_ADMIN_table()
-
-main_menu()
+    main_menu()
