@@ -225,12 +225,21 @@ def main_menu():
 
             else:
                 print("Invalid Entry")
+                
+            def get_user_choice(max_choice):
+                while True:
+                    user_choice = input("Please select an option: ")
+                    if not user_choice.isdigit() or not 1 <= int(user_choice) <= max_choice:
+                        print(f"Invalid Entry. Please enter a number between 1 and {max_choice}")
+                    else:
+                        return int(user_choice)
 
             if user == 0:  # USER
                 print("USER MENU ITEMS")
                 print("1. Search Course")
                 print("2. Show User Info")
                 print("3. Change Password")
+                user_choice = get_user_choice(3)
                 # Search Course, Show User Info, change password
             elif user == 1:  # STUDENT
                 print("STUDENT MENU ITEMS")
@@ -241,6 +250,7 @@ def main_menu():
                 print("5. Show Course")
                 print("6. Show User Info")
                 print("7. Change Password")
+                user_choice = get_user_choice(7)
                 # Search Course, Add Course, Drop Course, Show Schedule, show course, show user info, change password
             elif user == 2:  # INSTRUCTOR
                 print("INSTRUCTOR MENU ITEMS")
@@ -252,6 +262,7 @@ def main_menu():
                 print("6. Show Schedule")
                 print("7. Show User Info")
                 print("8. Change Password")
+                user_choice = get_user_choice(8)
                 # Search Roster, Show Roster, Search Course, Show Course, show schedule, show user info, change password
             elif user == 3:  # ADMIN
                 print("ADMIN MENU ITEMS")
@@ -277,6 +288,7 @@ def main_menu():
                 print("20. Update Admin")
                 print("21. Show User Info")
                 print("22. Change Password")
+                user_choice = get_user_choice(22)
             # Search Roster, Show Roster, Search Course, Show Course, Add Course, Remove Course, Add User,
             # Remove User, Add Student, Remove Student, Add Instructor, Remove Instructor, Add Admin, Remove Admin,
             # Query Users, Query Students, Query Instructors, Query Admins, Update Admin, show user info,
