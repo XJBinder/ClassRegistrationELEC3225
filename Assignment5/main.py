@@ -178,8 +178,11 @@ def search_course():
     cursor.execute(query, params)
 
     courses = cursor.fetchall()
-    for course in courses:
-        print(course)
+    if not courses:
+        print("No courses found.")
+    else:
+        for course in courses:
+            print(course)
 
     conn.close()
 
@@ -220,8 +223,9 @@ def main_menu():
     print("\n---Welcome to Leopard Web Class Registration Software---")
     print("1. Login")
     print("2. Create Account")
+    print("3. Exit")
 
-    choice = get_user_input(2)
+    choice = get_user_input(3)
 
     if choice == 1:
         print("\n---Login---")
@@ -334,6 +338,8 @@ def main_menu():
 
             return user, user_object
 
+    elif choice == 3:
+        return 4, None
 
 def user_functions(user_object, user_choice):
     if user_choice == 1:
@@ -343,7 +349,7 @@ def user_functions(user_object, user_choice):
         show_all_courses()
 
     elif user_choice == 3:
-        user_object.show_all_info()
+        print(user_object.show_all_info())
 
     elif user_choice == 4:
         new_password = input("Enter New Password: ")
@@ -367,7 +373,7 @@ def student_functions(user_object, user_choice):
         user_object.show_schedule()
 
     elif user_choice == 6:
-        user_object.show_all_info()
+        print(user_object.show_all_info())
 
     elif user_choice == 7:
         new_password = input("Enter New Password: ")
@@ -388,7 +394,7 @@ def instructor_functions(user_object, user_choice):
         user_object.show_roster()
 
     elif user_choice == 5:
-        user_object.show_all_info()
+        print(user_object.show_all_info())
 
     elif user_choice == 6:
         new_password = input("Enter New Password: ")
@@ -454,7 +460,7 @@ def admin_functions(user_object, user_choice):
         user_object.update_admin()
 
     elif user_choice == 20:
-        user_object.show_all_info()
+        print(user_object.show_all_info())
 
     elif user_choice == 21:
         new_password = input("Enter New Password: ")
@@ -515,7 +521,7 @@ def sub_menu(user, user_object):
                 print("3. Search Roster")
                 print("4. Show Roster")
                 print("5. Add Course")
-                print("6, Remove Course")
+                print("6. Remove Course")
                 print("7. Add User")
                 print("8. Remove User")
                 print("9. Add Student")
@@ -538,10 +544,11 @@ def sub_menu(user, user_object):
 
                 admin_functions(user_object, user_choice)
 
+            elif user == 4:
+                break
+
         except Exception as e:
             print(f"An Error Occurred: {e}")
-        finally:
-            input("Press Enter to Exit")
 
 
 # Creating User Class
@@ -597,7 +604,8 @@ class User:
         conn.close()
 
     def show_all_info(self):
-        return 'Firstname:{}, Lastname:{}, Wentworth ID:{},'.format(self.first_name, self.last_name, self.wentworth_id)
+        return 'Firstname: {}, Lastname: {}, Wentworth ID: {}'.format(self.first_name, self.last_name,
+                                                                      self.wentworth_id)
 
     def add_to_database(self):
         conn = sqlite3.connect('database.db')
@@ -630,6 +638,17 @@ class Student(User):
 
         if email is None:
             self.email = 'N/A'
+
+    def set_password(self, password):
+        self.password = password
+
+        # Update password in the database
+        conn = sqlite3.connect('database.db')
+        cursor = conn.cursor()
+        cursor.execute("UPDATE STUDENT SET PASSWORD = ? WHERE WENTWORTHID = ?", (password, self.wentworth_id))
+
+        conn.commit()
+        conn.close()
 
     def add_course(self):
         print("\n--Add Course--")
@@ -730,6 +749,17 @@ class Instructor(User):
         if email is None:
             self.email = 'N/A'
 
+    def set_password(self, password):
+        self.password = password
+
+        # Update password in the database
+        conn = sqlite3.connect('database.db')
+        cursor = conn.cursor()
+        cursor.execute("UPDATE INSTRUCTOR SET PASSWORD = ? WHERE WENTWORTHID = ?", (password, self.wentworth_id))
+
+        conn.commit()
+        conn.close()
+
     def search_roster(self):
         while True:
             course, crn = is_crn_unique()
@@ -742,7 +772,7 @@ class Instructor(User):
                 continue
 
             print(f"{course[1]} Roster Search:")
-            wentworth_id = input("Enter Wentworth ID:")
+            wentworth_id = input("Enter Wentworth ID: ")
 
             conn = sqlite3.connect('database.db')
             cursor = conn.cursor()
@@ -850,6 +880,17 @@ class Admin(User):
         if email is None:
             self.email = 'N/A'
 
+    def set_password(self, password):
+        self.password = password
+
+        # Update password in the database
+        conn = sqlite3.connect('database.db')
+        cursor = conn.cursor()
+        cursor.execute("UPDATE ADMIN SET PASSWORD = ? WHERE WENTWORTHID = ?", (password, self.wentworth_id))
+
+        conn.commit()
+        conn.close()
+
     def add_course(self):
         while True:
             course, crn = is_crn_unique()
@@ -857,8 +898,8 @@ class Admin(User):
             if course == 0:
                 break
 
-            if course is None:
-                print(f"Course with CRN {crn} does not exist.")
+            if course is not None:
+                print(f"Course with CRN {crn} already exists.")
                 continue
 
             title = input("Enter Title: ")
@@ -1165,7 +1206,7 @@ class Admin(User):
                 continue
 
             print(f"{course[1]} Roster Search:")
-            wentworth_id = input("Enter Wentworth ID:")
+            wentworth_id = input("Enter Wentworth ID: ")
 
             conn = sqlite3.connect('database.db')
             cursor = conn.cursor()
@@ -1245,16 +1286,28 @@ class Admin(User):
             conn.close()
             break
 
-    def update_admin(self, wentworth_id, new_title):
+    def update_admin(self):
+        wentworth_id = input("Enter Wentworth ID: ")
+
         conn = sqlite3.connect('database.db')
         cursor = conn.cursor()
+
+        cursor.execute("SELECT * FROM ADMIN WHERE WENTWORTHID = ?", (wentworth_id,))
+        admin = cursor.fetchone()
+
+        if admin is None:
+            print("Admin does not exist.")
+            conn.close()
+            return
+
+        new_title = input("Enter New Title: ")
+
         cursor.execute("UPDATE ADMIN SET TITLE = ? WHERE WENTWORTHID = ?", (new_title, wentworth_id))
-        conn.commit()
-        conn.close()
-        print(f"Admin with ID {wentworth_id} updated to {new_title}.")
 
         conn.commit()
         conn.close()
+
+        print(f"Admin with ID {wentworth_id} title updated to {new_title}.")
 
     def add_to_database(self):
         conn = sqlite3.connect('database.db')
