@@ -1,10 +1,10 @@
 import sqlite3
 
 
+# Create table called "COURSE"
 def create_COURSE_table():
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
-    # Create new table called "COURSE"
     cursor.execute('''CREATE TABLE IF NOT EXISTS COURSE (
         CRN INTEGER PRIMARY KEY,
         TITLE TEXT NOT NULL,
@@ -19,10 +19,10 @@ def create_COURSE_table():
     conn.close()
 
 
+# Create new table called "USER"
 def create_USER_table():
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
-    # Create new table called "USER"
     cursor.execute('''CREATE TABLE IF NOT EXISTS USER (
         WENTWORTHID TEXT PRIMARY KEY,
         FIRSTNAME TEXT NOT NULL,
@@ -33,10 +33,10 @@ def create_USER_table():
     conn.close()
 
 
+# Create new table called "STUDENT"
 def create_STUDENT_table():
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
-    # Create new table called "STUDENT"
     cursor.execute('''CREATE TABLE IF NOT EXISTS STUDENT (
         WENTWORTHID TEXT PRIMARY KEY,
         FIRSTNAME TEXT NOT NULL,
@@ -51,10 +51,11 @@ def create_STUDENT_table():
     conn.close()
 
 
+# Create new table called "STUDENT_COURSE"
+# This Table relates the STUDENT and COURSE table allowing students to have more than one course
 def create_STUDENT_COURSE_table():
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
-    # Create new table called "STUDENT_COURSE"
     cursor.execute('''CREATE TABLE IF NOT EXISTS STUDENT_COURSE (
         WENTWORTHID TEXT NOT NULL,
         CRN INTEGER NOT NULL,
@@ -66,10 +67,10 @@ def create_STUDENT_COURSE_table():
     conn.close()
 
 
+# Create new table called "INSTRUCTOR"
 def create_INSTRUCTOR_table():
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
-    # Create new table called "INSTRUCTOR"
     cursor.execute('''CREATE TABLE IF NOT EXISTS INSTRUCTOR (
         WENTWORTHID TEXT PRIMARY KEY,
         FIRSTNAME TEXT NOT NULL,
@@ -84,10 +85,10 @@ def create_INSTRUCTOR_table():
     conn.close()
 
 
+# Create new table called "ADMIN"
 def create_ADMIN_table():
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
-    # Create new table called "ADMIN"
     cursor.execute('''CREATE TABLE IF NOT EXISTS ADMIN (
         WENTWORTHID TEXT PRIMARY KEY,
         FIRSTNAME TEXT NOT NULL,
@@ -101,53 +102,64 @@ def create_ADMIN_table():
     conn.close()
 
 
+# Login Function (Checks if the user exists in the database)
 def login(wentworth_id, password):
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
 
     # List of tables to check
     tables = ['USER', 'STUDENT', 'INSTRUCTOR', 'ADMIN']
-    account_exists = False
 
+    # Query each table to see if the account exists
     for table in tables:
         cursor.execute(f"SELECT * FROM {table} WHERE WENTWORTHID = ?", (wentworth_id,))
         account = cursor.fetchone()
 
+        # If account exists, check the password
         if account is not None:
-            account_exists = True
+            # Password is incorrect
             if account[3] != password:
                 print("Password Incorrect")
+                conn.close()
                 return None, None
+            # Password is correct
             else:
                 print(f"Logged in as {account[1]}")
+                conn.close()
                 return account, table
 
-    if not account_exists:
-        print("Account does not exist")
-
+    # If no account is found in any table
+    print("Account does not exist")
     conn.close()
     return None, None
 
 
+# get_user_input Function (Gets the user input and checks if it is a valid response)
 def get_user_input(max_choice):
     while True:
         try:
-            user_input = int(input("Select an Option: "))
+            # Get the Menu input from the user
+            user_input = int(input("Select an Option: "))  # int returns "ValueError" if the input is not an integer
+            # Not within Menu range
             if not 1 <= user_input <= max_choice:
                 print("Invalid Entry")
                 continue
             else:
                 return user_input
+        # If the user enters a non-integer value
         except ValueError:
             print("Invalid Entry")
 
 
+# search_course Function (Searches for a course in the database)
 def search_course():
+    # Get the search parameters from the user
     crn = input("Enter CRN (or press Enter to skip): ")
     title = input("Enter Title (or press Enter to skip): ")
     day = input("Enter Day (or press Enter to skip): ")
     time = input("Enter Time (or press Enter to skip): ")
 
+    # If the user presses Enter, set the value to None
     crn = None if crn == "" else crn
     title = None if title == "" else title
     day = None if day == "" else day
@@ -159,6 +171,7 @@ def search_course():
     query = "SELECT * FROM COURSE WHERE 1"
     params = []
 
+    # Add the search parameters to the query
     if crn is not None:
         query += " AND CRN LIKE ?"
         params.append('%' + crn + '%')
@@ -177,6 +190,7 @@ def search_course():
 
     cursor.execute(query, params)
 
+    # Fetch and print the results
     courses = cursor.fetchall()
     if not courses:
         print("No courses found.")
@@ -187,6 +201,7 @@ def search_course():
     conn.close()
 
 
+# show_all_courses Function (Shows all the courses in the database)
 def show_all_courses():
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
@@ -198,6 +213,7 @@ def show_all_courses():
     conn.close()
 
 
+# Ensures that the user inputted CRN is an integer and returns the course if it exists
 def is_crn_unique():
     while True:
         crn = input("Enter CRN (or 'exit' to cancel): ")
@@ -216,10 +232,12 @@ def is_crn_unique():
 
         conn.close()
 
+        # Returns the course if it exists and valid user inputted CRN
         return course, crn
 
 
-def main_menu():
+# First Menu where the user can log in, create an account, or exit
+def start_menu():
     print("\n---Welcome to Leopard Web Class Registration Software---")
     print("1. Login")
     print("2. Create Account")
@@ -227,42 +245,57 @@ def main_menu():
 
     choice = get_user_input(3)
 
+    # If the user chooses to log in
     if choice == 1:
         print("\n---Login---")
         wentworth_id = input("Enter your Wentworth ID: ")
         password = input("Enter your Password: ")
         fetched_account, fetched_account_type = login(wentworth_id, password)
 
+        # If the account does not exist, return to the menu options
         if fetched_account is None:
             print("Login failed. Please try again.")
-            return main_menu()
+            return start_menu()
 
+        # Returned account type is User
         if fetched_account_type == 'USER':
             user = 0
+
+            # Create User Object
             user_object = User(fetched_account[1], fetched_account[2], fetched_account[0], fetched_account[3])
             return user, user_object
 
+        # Returned account type is Student
         elif fetched_account_type == 'STUDENT':
             user = 1
+
+            # Create Student Object
             user_object = Student(fetched_account[1], fetched_account[2], fetched_account[0],
                                   fetched_account[3], fetched_account[4], fetched_account[5],
                                   fetched_account[6], fetched_account[7])
             return user, user_object
 
+        # Returned account type is Instructor
         elif fetched_account_type == 'INSTRUCTOR':
             user = 2
+
+            # Create Instructor Object
             user_object = Instructor(fetched_account[1], fetched_account[2], fetched_account[0],
                                      fetched_account[3], fetched_account[4], fetched_account[5],
                                      fetched_account[6], fetched_account[7])
             return user, user_object
 
+        # Returned account type is Admin
         elif fetched_account_type == 'ADMIN':
             user = 3
+
+            # Create Admin Object
             user_object = Admin(fetched_account[1], fetched_account[2], fetched_account[0],
                                 fetched_account[3], fetched_account[4], fetched_account[5],
                                 fetched_account[6])
             return user, user_object
 
+    # If the user chooses to create an account
     elif choice == 2:
         print("\n---Account Type---")
         print("1. Student")
@@ -280,6 +313,7 @@ def main_menu():
             wentworth_id = input("Enter your Wentworth ID: ")
             password = input("Enter your Password: ")
 
+            # Create User Object
             user_object = User(first_name, last_name, wentworth_id, password)
             user_object.add_to_database()
 
@@ -297,6 +331,7 @@ def main_menu():
             major = input("Enter your Major: ")
             email = input("Enter your Email: ")
 
+            # Create Student Object
             user_object = Student(first_name, last_name, wentworth_id, password, None, grad_year, major, email)
             user_object.add_to_database()
 
@@ -315,6 +350,7 @@ def main_menu():
             title = input("Enter your Title: ")
             email = input("Enter your Email: ")
 
+            # Create Instructor Object
             user_object = Instructor(first_name, last_name, wentworth_id, password, department, hire_year, title,
                                      email)
             user_object.add_to_database()
@@ -333,14 +369,18 @@ def main_menu():
             office = input("Enter your Office: ")
             email = input("Enter your Email: ")
 
+            # Create Admin Object
             user_object = Admin(first_name, last_name, wentworth_id, password, title, office, email)
             user_object.add_to_database()
 
             return user, user_object
 
+    # If the user chooses to exit
     elif choice == 3:
-        return 4, None
+        return 4, None  # Return 4 to selection_menu() which will break the while loop
 
+
+# Takes user input from selection_menu() and calls the appropriate method or function based on the user's choice
 def user_functions(user_object, user_choice):
     if user_choice == 1:
         search_course()
@@ -356,6 +396,7 @@ def user_functions(user_object, user_choice):
         user_object.set_password(new_password)
 
 
+# Takes user input from selection_menu() and calls the appropriate method or function based on the user's choice
 def student_functions(user_object, user_choice):
     if user_choice == 1:
         search_course()
@@ -380,6 +421,7 @@ def student_functions(user_object, user_choice):
         user_object.set_password(new_password)
 
 
+# Takes user input from selection_menu() and calls the appropriate method or function based on the user's choice
 def instructor_functions(user_object, user_choice):
     if user_choice == 1:
         search_course()
@@ -401,6 +443,7 @@ def instructor_functions(user_object, user_choice):
         user_object.set_password(new_password)
 
 
+# Takes user input from selection_menu() and calls the appropriate method or function based on the user's choice
 def admin_functions(user_object, user_choice):
     if user_choice == 1:
         search_course()
@@ -467,7 +510,8 @@ def admin_functions(user_object, user_choice):
         user_object.set_password(new_password)
 
 
-def sub_menu(user, user_object):
+# Selection Menu where the user can choose what they would like to do based on their user type
+def selection_menu(user, user_object):
     while True:
         try:
             if user == 0:  # USER
@@ -607,6 +651,7 @@ class User:
         return 'Firstname: {}, Lastname: {}, Wentworth ID: {}'.format(self.first_name, self.last_name,
                                                                       self.wentworth_id)
 
+    # Update the user's information in the database
     def add_to_database(self):
         conn = sqlite3.connect('database.db')
         cursor = conn.cursor()
@@ -650,6 +695,7 @@ class Student(User):
         conn.commit()
         conn.close()
 
+    # Add a course to the student's schedule
     def add_course(self):
         print("\n--Add Course--")
         while True:
@@ -675,6 +721,7 @@ class Student(User):
             print(f"Course {crn} added.")
             break
 
+    # Drop a course from the student's schedule
     def drop_course(self):
         print("\n--Drop Course--")
         while True:
@@ -700,6 +747,7 @@ class Student(User):
             print(f"Course {crn} dropped.")
             break
 
+    # Show the student's schedule
     def show_schedule(self):
         conn = sqlite3.connect('database.db')
         cursor = conn.cursor()
@@ -717,6 +765,7 @@ class Student(User):
 
         conn.close()
 
+    # Updates the Students information in the database
     def add_to_database(self):
         conn = sqlite3.connect('database.db')
         cursor = conn.cursor()
@@ -761,6 +810,7 @@ class Instructor(User):
         conn.close()
 
     def search_roster(self):
+        # Gets the CRN from the user and searches for the student or instructor in the course
         while True:
             course, crn = is_crn_unique()
 
@@ -785,6 +835,8 @@ class Instructor(User):
                 WHERE STUDENT.WENTWORTHID = ? AND STUDENT_COURSE.CRN = ?
             """, (wentworth_id, crn))
             student = cursor.fetchone()
+
+            # If the student is found, print their information
             if student is not None:
                 student_obj = Student(student[1], student[2], student[0], student[3], student[4], student[5],
                                       student[6], student[7])
@@ -799,17 +851,21 @@ class Instructor(User):
                 WHERE INSTRUCTOR.WENTWORTHID = ? AND COURSE.CRN = ?
             """, (wentworth_id, crn))
             instructor = cursor.fetchone()
+
+            # If the instructor is found, print their information
             if instructor is not None:
                 instructor_obj = Instructor(instructor[1], instructor[2], instructor[0], instructor[3], instructor[4],
                                             instructor[5], instructor[6], instructor[7])
                 print(instructor_obj.show_all_info())
                 return
 
+            # If no user is found with the given Wentworth ID in the course
             print(f"No user found with Wentworth ID {wentworth_id} in the course with CRN {crn}")
 
             conn.close()
             break
 
+    # Show the roster for a course
     def show_roster(self):
         while True:
             course, crn = is_crn_unique()
@@ -853,11 +909,12 @@ class Instructor(User):
             conn.close()
             break
 
+    # Updates the Instructors information in the database
     def add_to_database(self):
         conn = sqlite3.connect('database.db')
         cursor = conn.cursor()
         cursor.execute("INSERT INTO INSTRUCTOR VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                        (self.wentworth_id, self.first_name, self.last_name, self.password, self.department,
+                       (self.wentworth_id, self.first_name, self.last_name, self.password, self.department,
                         self.hire_year, self.title, self.email))
         conn.commit()
         conn.close()
@@ -891,6 +948,7 @@ class Admin(User):
         conn.commit()
         conn.close()
 
+    # Adds course to the database
     def add_course(self):
         while True:
             course, crn = is_crn_unique()
@@ -930,6 +988,7 @@ class Admin(User):
             print(f"Course {title} added.")
             break
 
+    # Removes course from the database
     def remove_course(self):
         while True:
             course, crn = is_crn_unique()
@@ -952,6 +1011,7 @@ class Admin(User):
             print(f"Course with CRN {crn} removed.")
             break
 
+    # Adds user to the database
     def add_user(self):
         print("\n--Add User--")
         wentworth_id = input("Enter Wentworth ID: ")
@@ -971,13 +1031,14 @@ class Admin(User):
         last_name = input("Enter Last Name: ")
         password = input(f"Enter Password for {first_name}: ")
 
-        cursor.execute("INSERT INTO USER VALUES (?, ?, ?, ?)",(wentworth_id, first_name, last_name, password))
+        cursor.execute("INSERT INTO USER VALUES (?, ?, ?, ?)", (wentworth_id, first_name, last_name, password))
 
         conn.commit()
         conn.close()
 
         print(f"User with Wentworth ID: {wentworth_id} added.")
 
+    # Removes user from the database
     def remove_user(self):
         print("\n--Remove User--")
         wentworth_id = input("Enter Wentworth ID: ")
@@ -1000,6 +1061,7 @@ class Admin(User):
 
         print(f"User with Wentworth ID: {wentworth_id} removed.")
 
+    # Adds student to the database
     def add_student(self):
         print("\n--Add Student--")
         wentworth_id = input("Enter Wentworth ID: ")
@@ -1031,6 +1093,7 @@ class Admin(User):
 
         print(f"Student with Wentworth ID: {wentworth_id} added.")
 
+    # Removes student from the database
     def remove_student(self):
         print("\n--Remove Student--")
         wentworth_id = input("Enter Wentworth ID: ")
@@ -1053,6 +1116,7 @@ class Admin(User):
 
         print(f"Student with Wentworth ID: {wentworth_id} removed.")
 
+    # Adds instructor to the database
     def add_instructor(self):
         print("\n--Add Instructor--")
         wentworth_id = input("Enter Wentworth ID: ")
@@ -1084,6 +1148,7 @@ class Admin(User):
 
         print(f"Instructor with Wentworth ID: {wentworth_id} added.")
 
+    # Removes instructor from the database
     def remove_instructor(self):
         print("\n--Remove Instructor--")
         wentworth_id = input("Enter Wentworth ID: ")
@@ -1106,6 +1171,7 @@ class Admin(User):
 
         print(f"Instructor with Wentworth ID: {wentworth_id} removed.")
 
+    # Adds admin to the database
     def add_admin(self):
         print("\n--Add Admin--")
         wentworth_id = input("Enter Wentworth ID: ")
@@ -1136,6 +1202,7 @@ class Admin(User):
 
         print(f"Admin with Wentworth ID: {wentworth_id} added.")
 
+    # Removes admin from the database
     def remove_admin(self):
         print("\n--Remove Admin--")
         wentworth_id = input("Enter Wentworth ID: ")
@@ -1158,6 +1225,7 @@ class Admin(User):
 
         print(f"Admin with Wentworth ID: {wentworth_id} removed.")
 
+    # Prints all users in the database
     def query_users(self):
         conn = sqlite3.connect('database.db')
         cursor = conn.cursor()
@@ -1167,6 +1235,7 @@ class Admin(User):
             print(user)
         conn.close()
 
+    # Prints all students in the database
     def query_students(self):
         conn = sqlite3.connect('database.db')
         cursor = conn.cursor()
@@ -1176,6 +1245,7 @@ class Admin(User):
             print(student)
         conn.close()
 
+    # Prints all instructors in the database
     def query_instructors(self):
         conn = sqlite3.connect('database.db')
         cursor = conn.cursor()
@@ -1185,6 +1255,7 @@ class Admin(User):
             print(instructor)
         conn.close()
 
+    # Prints all admins in the database
     def query_admins(self):
         conn = sqlite3.connect('database.db')
         cursor = conn.cursor()
@@ -1194,6 +1265,7 @@ class Admin(User):
             print(admin)
         conn.close()
 
+    # Search 
     def search_roster(self):
         while True:
             course, crn = is_crn_unique()
@@ -1219,6 +1291,8 @@ class Admin(User):
                 WHERE STUDENT.WENTWORTHID = ? AND STUDENT_COURSE.CRN = ?
             """, (wentworth_id, crn))
             student = cursor.fetchone()
+            
+            # If student is found, print their information
             if student is not None:
                 student_obj = Student(student[1], student[2], student[0], student[3], student[4], student[5],
                                       student[6], student[7])
@@ -1233,16 +1307,20 @@ class Admin(User):
                 WHERE INSTRUCTOR.WENTWORTHID = ? AND COURSE.CRN = ?
             """, (wentworth_id, crn))
             instructor = cursor.fetchone()
+            
+            # If instructor is found, print their information
             if instructor is not None:
                 instructor_obj = Instructor(instructor[1], instructor[2], instructor[0], instructor[3], instructor[4],
                                             instructor[5], instructor[6], instructor[7])
                 print(instructor_obj.show_all_info())
                 return
 
+            # If no user is found with the given Wentworth ID in the course
             print(f"No user found with Wentworth ID {wentworth_id} in the course with CRN {crn}")
 
             conn.close()
 
+    # Show the roster for a course
     def show_roster(self):
         while True:
             course, crn = is_crn_unique()
@@ -1286,6 +1364,7 @@ class Admin(User):
             conn.close()
             break
 
+    # Updates an Admins Title
     def update_admin(self):
         wentworth_id = input("Enter Wentworth ID: ")
 
@@ -1309,6 +1388,7 @@ class Admin(User):
 
         print(f"Admin with ID {wentworth_id} title updated to {new_title}.")
 
+    # Updates the Admins information in the database
     def add_to_database(self):
         conn = sqlite3.connect('database.db')
         cursor = conn.cursor()
@@ -1320,7 +1400,9 @@ class Admin(User):
         conn.close()
 
 
+# Runs the program if the main file is run
 if __name__ == '__main__':
+    # Creates all Tables if they do not exist
     create_COURSE_table()
     create_USER_table()
     create_STUDENT_table()
@@ -1328,5 +1410,10 @@ if __name__ == '__main__':
     create_INSTRUCTOR_table()
     create_ADMIN_table()
 
-    user_type, active_user_object = main_menu()
-    sub_menu(user_type, active_user_object)
+    # Calls the start_menu() function to start the program with the user selecting their account type and entering 
+    # their respective information
+    user_type, active_user_object = start_menu()
+    
+    # Calls the selection_menu() function to display the selection menu and allow the user to use other functions and 
+    # methods that exist in the program
+    selection_menu(user_type, active_user_object)
