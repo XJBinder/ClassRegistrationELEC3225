@@ -152,19 +152,7 @@ def get_user_input(max_choice):
 
 
 # search_course Function (Searches for a course in the database)
-def search_course():
-    # Get the search parameters from the user
-    crn = input("Enter CRN (or press Enter to skip): ")
-    title = input("Enter Title (or press Enter to skip): ")
-    day = input("Enter Day (or press Enter to skip): ")
-    time = input("Enter Time (or press Enter to skip): ")
-
-    # If the user presses Enter, set the value to None
-    crn = None if crn == "" else crn
-    title = None if title == "" else title
-    day = None if day == "" else day
-    time = None if time == "" else time
-
+def search_course(crn=None, title=None, day=None, time=None):
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
 
@@ -199,6 +187,7 @@ def search_course():
             print(course)
 
     conn.close()
+
 
 
 # show_all_courses Function (Shows all the courses in the database)
@@ -1265,7 +1254,7 @@ class Admin(User):
             print(admin)
         conn.close()
 
-    # Search 
+    # Search
     def search_roster(self):
         while True:
             course, crn = is_crn_unique()
@@ -1291,7 +1280,7 @@ class Admin(User):
                 WHERE STUDENT.WENTWORTHID = ? AND STUDENT_COURSE.CRN = ?
             """, (wentworth_id, crn))
             student = cursor.fetchone()
-            
+
             # If student is found, print their information
             if student is not None:
                 student_obj = Student(student[1], student[2], student[0], student[3], student[4], student[5],
@@ -1307,7 +1296,7 @@ class Admin(User):
                 WHERE INSTRUCTOR.WENTWORTHID = ? AND COURSE.CRN = ?
             """, (wentworth_id, crn))
             instructor = cursor.fetchone()
-            
+
             # If instructor is found, print their information
             if instructor is not None:
                 instructor_obj = Instructor(instructor[1], instructor[2], instructor[0], instructor[3], instructor[4],
@@ -1410,10 +1399,10 @@ if __name__ == '__main__':
     create_INSTRUCTOR_table()
     create_ADMIN_table()
 
-    # Calls the start_menu() function to start the program with the user selecting their account type and entering 
+    # Calls the start_menu() function to start the program with the user selecting their account type and entering
     # their respective information
     user_type, active_user_object = start_menu()
-    
-    # Calls the selection_menu() function to display the selection menu and allow the user to use other functions and 
+
+    # Calls the selection_menu() function to display the selection menu and allow the user to use other functions and
     # methods that exist in the program
     selection_menu(user_type, active_user_object)
