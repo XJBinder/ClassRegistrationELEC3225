@@ -42,7 +42,6 @@ def create_STUDENT_table():
         FIRSTNAME TEXT NOT NULL,
         LASTNAME TEXT NOT NULL,
         PASSWORD TEXT NOT NULL,
-        COURSES INTEGER,
         GRADYEAR INTEGER,
         MAJOR TEXT,
         EMAIL TEXT)''')
@@ -272,7 +271,7 @@ def start_menu():
             # Create Student Object
             user_object = Student(fetched_account[1], fetched_account[2], fetched_account[0],
                                   fetched_account[3], fetched_account[4], fetched_account[5],
-                                  fetched_account[6], fetched_account[7])
+                                  fetched_account[6])
             return user, user_object
 
         # Returned account type is Instructor
@@ -332,7 +331,7 @@ def start_menu():
             email = input("Enter your Email: ")
 
             # Create Student Object
-            user_object = Student(first_name, last_name, wentworth_id, password, None, grad_year, major, email)
+            user_object = Student(first_name, last_name, wentworth_id, password, grad_year, major, email)
             user_object.add_to_database()
 
             return user, user_object
@@ -664,16 +663,12 @@ class User:
 
 # Creating Student Class
 class Student(User):
-    def __init__(self, first_name, last_name, wentworth_id, password, courses=None, grad_year=None, major=None,
+    def __init__(self, first_name, last_name, wentworth_id, password, grad_year=None, major=None,
                  email=None):
         super().__init__(first_name, last_name, wentworth_id, password)
-        self.courses = courses
         self.grad_year = grad_year
         self.major = major
         self.email = email
-
-        if courses is None:
-            self.courses = 'N/A'
 
         if grad_year is None:
             self.grad_year = 'N/A'
@@ -769,8 +764,8 @@ class Student(User):
     def add_to_database(self):
         conn = sqlite3.connect('database.db')
         cursor = conn.cursor()
-        cursor.execute("INSERT INTO STUDENT VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                       (self.wentworth_id, self.first_name, self.last_name, self.password, self.courses, self.grad_year,
+        cursor.execute("INSERT INTO STUDENT VALUES (?, ?, ?, ?, ?, ?, ?)",
+                       (self.wentworth_id, self.first_name, self.last_name, self.password, self.grad_year,
                         self.major, self.email))
         conn.commit()
         conn.close()
@@ -839,7 +834,7 @@ class Instructor(User):
             # If the student is found, print their information
             if student is not None:
                 student_obj = Student(student[1], student[2], student[0], student[3], student[4], student[5],
-                                      student[6], student[7])
+                                      student[6])
                 print(student_obj.show_all_info())
                 return
 
@@ -884,23 +879,21 @@ class Instructor(User):
 
             # Query to find all instructors that have the inputted course
             cursor.execute("""
-                        SELECT INSTRUCTOR.*, COURSE.*
-                        FROM INSTRUCTOR
-                        JOIN COURSE ON INSTRUCTOR.DEPARTMENT = COURSE.DEPARTMENT
-                        WHERE COURSE.DEPARTMENT = ?
-                    """, (course[2],))
+                SELECT INSTRUCTOR.*, COURSE.*
+                FROM INSTRUCTOR
+                JOIN COURSE ON INSTRUCTOR.DEPARTMENT = COURSE.DEPARTMENT
+                WHERE COURSE.DEPARTMENT = ?""", (course[2],))
             instructors_with_course = cursor.fetchall()
             print("Instructors that can teach this course:")
             for instructor in instructors_with_course:
                 print(instructor)
 
             # Query to find all students that have the inputted course
-            cursor.execute("""
-                SELECT STUDENT.*, COURSE.*
+            cursor.execute("""SELECT STUDENT.*
                 FROM STUDENT
-                JOIN COURSE ON STUDENT.COURSES = COURSE.CRN
-                WHERE COURSE.CRN = ?
-            """, (crn,))
+                JOIN STUDENT_COURSE
+                ON STUDENT.WENTWORTHID = STUDENT_COURSE.WENTWORTHID 
+                WHERE STUDENT_COURSE.CRN = ?""", (crn,))
             students_with_course = cursor.fetchall()
             print(f"Students taking {course[1]}:")
             for student in students_with_course:
@@ -1085,8 +1078,8 @@ class Admin(User):
         major = input("Enter Major: ")
         email = input("Enter Email: ")
 
-        cursor.execute("INSERT INTO STUDENT VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                       (wentworth_id, first_name, last_name, password, courses, grad_year, major, email))
+        cursor.execute("INSERT INTO STUDENT VALUES (?, ?, ?, ?, ?, ?, ?)",
+                       (wentworth_id, first_name, last_name, password, grad_year, major, email))
 
         conn.commit()
         conn.close()
@@ -1295,7 +1288,7 @@ class Admin(User):
             # If student is found, print their information
             if student is not None:
                 student_obj = Student(student[1], student[2], student[0], student[3], student[4], student[5],
-                                      student[6], student[7])
+                                      student[6])
                 print(student_obj.show_all_info())
                 return
 
@@ -1339,23 +1332,21 @@ class Admin(User):
 
             # Query to find all instructors that have the inputted course
             cursor.execute("""
-                        SELECT INSTRUCTOR.*, COURSE.*
-                        FROM INSTRUCTOR
-                        JOIN COURSE ON INSTRUCTOR.DEPARTMENT = COURSE.DEPARTMENT
-                        WHERE COURSE.DEPARTMENT = ?
-                    """, (course[2],))
+                SELECT INSTRUCTOR.*, COURSE.*
+                FROM INSTRUCTOR
+                JOIN COURSE ON INSTRUCTOR.DEPARTMENT = COURSE.DEPARTMENT
+                WHERE COURSE.DEPARTMENT = ?""", (course[2],))
             instructors_with_course = cursor.fetchall()
             print("Instructors that can teach this course:")
             for instructor in instructors_with_course:
                 print(instructor)
 
             # Query to find all students that have the inputted course
-            cursor.execute("""
-                SELECT STUDENT.*, COURSE.*
+            cursor.execute("""SELECT STUDENT.*
                 FROM STUDENT
-                JOIN COURSE ON STUDENT.COURSES = COURSE.CRN
-                WHERE COURSE.CRN = ?
-            """, (crn,))
+                JOIN STUDENT_COURSE
+                ON STUDENT.WENTWORTHID = STUDENT_COURSE.WENTWORTHID 
+                WHERE STUDENT_COURSE.CRN = ?""", (crn,))
             students_with_course = cursor.fetchall()
             print(f"Students taking {course[1]}:")
             for student in students_with_course:
