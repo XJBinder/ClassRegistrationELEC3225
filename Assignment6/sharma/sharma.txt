@@ -1,1 +1,70 @@
+import unittest
+import sqlite3
+import main
+import io
+import sys
+from contextlib import redirect_stdout
+from unittest.mock import patch
+
+
+# Replace 'your_module' with the actual module name
+
+class TestCourseManagement(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        # Setup for course management tests
+        cls.conn = sqlite3.connect(':memory:')  # Use in-memory database for testing
+        cls.cursor = cls.conn.cursor()
+        # Assuming the existence of a function to create course table
+        main.create_COURSE_table(cls.cursor)
+
+    def test_add_course(self):
+        # Test adding a course
+        main.add_course(self.cursor, 'Test Course', 'TEST', '12:00', 'MWF', 'Fall', 2023, 3)
+        self.cursor.execute("SELECT * FROM COURSE WHERE TITLE = 'Test Course'")
+        course = self.cursor.fetchone()
+        self.assertIsNotNone(course)
+
+    def test_remove_course(self):
+        # Test removing a course
+        main.add_course(self.cursor, 'Test Course 2', 'TEST2', '13:00', 'TTh', 'Spring', 2024, 4)
+        main.remove_course(self.cursor, 'Test Course 2')
+        self.cursor.execute("SELECT * FROM COURSE WHERE TITLE = 'Test Course 2'")
+        course = self.cursor.fetchone()
+        self.assertIsNone(course)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.conn.close()
+
+
+class TestUserAuthentication(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        # Setup for user authentication tests
+        cls.conn = sqlite3.connect(':memory:')  # Use in-memory database for testing
+        cls.cursor = cls.conn.cursor()
+        # Assuming the existence of functions to create user tables and add a mock user
+        main.create_USER_table(cls.cursor)
+        main.add_user(cls.cursor, 'testuser', 'password')  # Mock user
+
+    def test_login_success(self):
+        # Test successful login
+        result = main.login(self.cursor, 'testuser', 'password')
+        self.assertTrue(result)
+
+    def test_login_failure(self):
+        # Test login failure
+        result = main.login(self.cursor, 'testuser', 'wrongpassword')
+        self.assertFalse(result)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.conn.close()
+
+
+if __name__ == '__main__':
+    unittest.main()
 NULL
