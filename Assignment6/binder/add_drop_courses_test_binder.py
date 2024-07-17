@@ -15,14 +15,9 @@ class TestFunction(unittest.TestCase):
         main.create_STUDENT_COURSE_table()
 
         # Clear existing data to avoid unique constraint violation
-        cls.cursor.execute("DELETE FROM COURSE")
         cls.cursor.execute("DELETE FROM STUDENT_COURSE")
 
         # Add test data
-        cls.cursor.execute("INSERT INTO COURSE (CRN, TITLE, DEPARTMENT, TIME, DAYS, SEMESTER, YEAR, CREDITS) VALUES"
-                            " (10001, 'How to Breathe', 'BSCE', '1530', 'MWF', 'Summer', 2024, 4)")
-        cls.cursor.execute("INSERT INTO COURSE (CRN, TITLE, DEPARTMENT, TIME, DAYS, SEMESTER, YEAR, CREDITS) VALUES"
-                            " (10002, 'Intro to Walking', 'BSEE', '0800', 'TTH', 'Summer', 2024, 4)")
         cls.cursor.execute("INSERT INTO STUDENT_COURSE (WENTWORTHID, CRN) VALUES ('W00409648', 10001)")
 
         cls.conn.commit()
@@ -33,7 +28,6 @@ class TestFunction(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         # Drop the COURSE table after tests
-        cls.cursor.execute("DROP TABLE IF EXISTS COURSE")
         cls.cursor.execute("DROP TABLE IF EXISTS STUDENT_COURSE")
 
         cls.conn.commit()
