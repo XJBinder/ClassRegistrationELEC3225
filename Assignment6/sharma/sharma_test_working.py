@@ -1,3 +1,4 @@
+# I worked on the login/logout(all users) and the add/remove course (admin) functions
 import unittest
 import sqlite3
 from unittest.mock import patch, MagicMock
