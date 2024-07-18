@@ -17,7 +17,7 @@ class TestCourseManagement(unittest.TestCase):
         cls.conn = sqlite3.connect(':memory:')  # Use in-memory database for testing
         cls.cursor = cls.conn.cursor()
         # Assuming the existence of a function to create course table
-        main.create_COURSE_table(cls.cursor)
+        main.create_COURSE_table()
 
     def test_add_course(self):
         # Test adding a course
@@ -47,7 +47,7 @@ class TestUserAuthentication(unittest.TestCase):
         cls.conn = sqlite3.connect(':memory:')  # Use in-memory database for testing
         cls.cursor = cls.conn.cursor()
         # Assuming the existence of functions to create user tables and add a mock user
-        main.create_USER_table(cls.cursor)
+        main.create_USER_table()
         main.add_user(cls.cursor, 'testuser', 'password')  # Mock user
 
     def test_login_success(self):
@@ -66,5 +66,4 @@ class TestUserAuthentication(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main()
-NULL
+    unittest.main(verbosity=2)
