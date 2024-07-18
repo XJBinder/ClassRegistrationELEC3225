@@ -884,9 +884,9 @@ class Instructor(User):
                 JOIN COURSE ON INSTRUCTOR.DEPARTMENT = COURSE.DEPARTMENT
                 WHERE COURSE.DEPARTMENT = ?""", (course[2],))
             instructors_with_course = cursor.fetchall()
-            print("Instructors that can teach this course:")
+            print("\nInstructors that can teach this course:")
             for instructor in instructors_with_course:
-                print(instructor)
+                print(f"{instructor[6]} {instructor[1]} {instructor[2]}, Email:{instructor[7]}")
 
             # Query to find all students that have the inputted course
             cursor.execute("""SELECT STUDENT.*
@@ -895,9 +895,9 @@ class Instructor(User):
                 ON STUDENT.WENTWORTHID = STUDENT_COURSE.WENTWORTHID 
                 WHERE STUDENT_COURSE.CRN = ?""", (crn,))
             students_with_course = cursor.fetchall()
-            print(f"Students taking {course[1]}:")
+            print(f"\nStudents taking {course[1]}:")
             for student in students_with_course:
-                print(student)
+                print(f"{student[1]} {student[2]}, Email:{student[6]}")
 
             conn.close()
             break
@@ -1337,9 +1337,9 @@ class Admin(User):
                 JOIN COURSE ON INSTRUCTOR.DEPARTMENT = COURSE.DEPARTMENT
                 WHERE COURSE.DEPARTMENT = ?""", (course[2],))
             instructors_with_course = cursor.fetchall()
-            print("Instructors that can teach this course:")
+            print("\nInstructors that can teach this course:")
             for instructor in instructors_with_course:
-                print(instructor)
+                print(f"{instructor[6]} {instructor[1]} {instructor[2]}, Email:{instructor[7]}")
 
             # Query to find all students that have the inputted course
             cursor.execute("""SELECT STUDENT.*
@@ -1348,9 +1348,9 @@ class Admin(User):
                 ON STUDENT.WENTWORTHID = STUDENT_COURSE.WENTWORTHID 
                 WHERE STUDENT_COURSE.CRN = ?""", (crn,))
             students_with_course = cursor.fetchall()
-            print(f"Students taking {course[1]}:")
+            print(f"\nStudents taking {course[1]}:")
             for student in students_with_course:
-                print(student)
+                print(f"{student[1]} {student[2]}, Email:{student[6]}")
 
             conn.close()
             break
