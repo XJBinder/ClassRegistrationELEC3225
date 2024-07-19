@@ -878,15 +878,12 @@ class Instructor(User):
             cursor = conn.cursor()
 
             # Query to find all instructors that have the inputted course
-            cursor.execute("""
-                SELECT INSTRUCTOR.*, COURSE.*
-                FROM INSTRUCTOR
-                JOIN COURSE ON INSTRUCTOR.DEPARTMENT = COURSE.DEPARTMENT
-                WHERE COURSE.DEPARTMENT = ?""", (course[2],))
+            cursor.execute("SELECT FIRSTNAME, LASTNAME, TITLE, EMAIL FROM INSTRUCTOR WHERE DEPARTMENT = ?", (course[2],))
             instructors_with_course = cursor.fetchall()
+
             print("\nInstructors that can teach this course:")
             for instructor in instructors_with_course:
-                print(f"{instructor[6]} {instructor[1]} {instructor[2]}, Email:{instructor[7]}")
+                print(f"{instructor[2]} {instructor[0]} {instructor[1]}, Email:{instructor[3]}")
 
             # Query to find all students that have the inputted course
             cursor.execute("""SELECT STUDENT.*
@@ -1331,15 +1328,13 @@ class Admin(User):
             cursor = conn.cursor()
 
             # Query to find all instructors that have the inputted course
-            cursor.execute("""
-                SELECT INSTRUCTOR.*, COURSE.*
-                FROM INSTRUCTOR
-                JOIN COURSE ON INSTRUCTOR.DEPARTMENT = COURSE.DEPARTMENT
-                WHERE COURSE.DEPARTMENT = ?""", (course[2],))
+            cursor.execute("SELECT FIRSTNAME, LASTNAME, TITLE, EMAIL FROM INSTRUCTOR WHERE DEPARTMENT = ?",
+                           (course[2],))
             instructors_with_course = cursor.fetchall()
+
             print("\nInstructors that can teach this course:")
             for instructor in instructors_with_course:
-                print(f"{instructor[6]} {instructor[1]} {instructor[2]}, Email:{instructor[7]}")
+                print(f"{instructor[2]} {instructor[0]} {instructor[1]}, Email:{instructor[3]}")
 
             # Query to find all students that have the inputted course
             cursor.execute("""SELECT STUDENT.*
