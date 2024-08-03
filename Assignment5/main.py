@@ -561,28 +561,119 @@ def selection_menu(user, user_object):
                 print("\n--Admin Menu--")
                 print("1. Search Course")
                 print("2. Show All Courses")
-                print("3. Search Roster")
-                print("4. Show Roster")
-                print("5. Add Course")
-                print("6. Remove Course")
-                print("7. Add User")
-                print("8. Remove User")
-                print("9. Add Student")
-                print("10. Remove Student")
-                print("11. Add Instructor")
-                print("12. Remove Instructor")
-                print("13. Add Admin")
-                print("14. Remove Admin")
-                print("15. Query Users")
-                print("16. Query Students")
-                print("17. Query Instructors")
-                print("18. Query Admins")
-                print("19. Update Admin")
-                print("20. Show My Info")
-                print("21. Change Password")
-                print("22. Exit")
-                user_choice = get_user_input(22)
-                if user_choice == 22:
+                print("3. Search/Show Roster")
+                print("4. Add/Remove Course")
+                print("5. Add/Remove User")
+                print("6. Add/Remove Student")
+                print("7. Add/Remove Instructor")
+                print("8. Add/Remove Admin")
+                print("9. Query Users")
+                print("10. Update Admin")
+                print("11. Show My Info")
+                print("12. Change Password")
+                print("13. Exit")
+                user_choice = get_user_input(13)
+
+                # Submenus
+                # Roster Submenu
+                if user_choice == 3:
+                    print("\n--Roster Submenu--")
+                    print("1. Search Roster")
+                    print("2. Show Roster")
+                    print("3. Exit")
+                    user_sub_choice = get_user_input(3)
+                    if user_sub_choice == 1:
+                        user_choice = 3
+                    elif user_sub_choice == 2:
+                        user_choice = 4
+                    elif user_sub_choice == 3:
+                        continue
+                # Add/Remove Course Submenu
+                elif user_choice == 4:
+                    print("\n--Add/Remove Course Submenu--")
+                    print("1. Add Course")
+                    print("2. Remove Course")
+                    print("3. Exit")
+                    user_sub_choice = get_user_input(3)
+                    if user_sub_choice == 1:
+                        user_choice = 5
+                    elif user_sub_choice == 2:
+                        user_choice = 6
+                    elif user_sub_choice == 3:
+                        continue
+                # Add/Remove User Submenu
+                elif user_choice == 5:
+                    print("\n--Add/Remove User Submenu--")
+                    print("1. Add User")
+                    print("2. Remove User")
+                    print("3. Exit")
+                    user_sub_choice = get_user_input(3)
+                    if user_sub_choice == 1:
+                        user_choice = 7
+                    elif user_sub_choice == 2:
+                        user_choice = 8
+                    elif user_sub_choice == 3:
+                        continue
+                # Add/Remove Student Submenu
+                elif user_choice == 6:
+                    print("\n--Add/Remove Student Submenu--")
+                    print("1. Add Student")
+                    print("2. Remove Student")
+                    print("3. Exit")
+                    user_sub_choice = get_user_input(3)
+                    if user_sub_choice == 1:
+                        user_choice = 9
+                    elif user_sub_choice == 2:
+                        user_choice = 10
+                    elif user_sub_choice == 3:
+                        continue
+                # Add/Remove Instructor Submenu
+                elif user_choice == 7:
+                    print("\n--Add/Remove Instructor Submenu--")
+                    print("1. Add Instructor")
+                    print("2. Remove Instructor")
+                    print("3. Exit")
+                    user_sub_choice = get_user_input(3)
+                    if user_sub_choice == 1:
+                        user_choice = 11
+                    elif user_sub_choice == 2:
+                        user_choice = 12
+                    elif user_sub_choice == 3:
+                        continue
+                # Add/Remove Admin Submenu
+                elif user_choice == 8:
+                    print("\n--Add/Remove Admin Submenu--")
+                    print("1. Add Admin")
+                    print("2. Remove Admin")
+                    print("3. Exit")
+                    user_sub_choice = get_user_input(3)
+                    if user_sub_choice == 1:
+                        user_choice = 13
+                    elif user_sub_choice == 2:
+                        user_choice = 14
+                    elif user_sub_choice == 3:
+                        continue
+                # Query Users Submenu
+                elif user_choice == 9:
+                    print("\n--Query Users Submenu--")
+                    print("1. Query Users")
+                    print("2. Query Students")
+                    print("3. Query Instructors")
+                    print("4. Query Admins")
+                    print("5. Exit")
+                    user_sub_choice = get_user_input(5)
+                    if user_sub_choice == 1:
+                        user_choice = 15
+                    elif user_sub_choice == 2:
+                        user_choice = 16
+                    elif user_sub_choice == 3:
+                        user_choice = 17
+                    elif user_sub_choice == 4:
+                        user_choice = 18
+                    elif user_sub_choice == 5:
+                        continue
+                # If Choice was to Exit
+                elif user_choice == 13:
                     break
 
                 admin_functions(user_object, user_choice)
