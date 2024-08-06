@@ -25,11 +25,12 @@ This is our ELEC3225 Class Registration Software. This code uses SQLite3 to crea
 - DatabaseGenerator.py is optional
 
 ## Installation
-After downloading the latest version of Python (3.12.4 as of August 2024)..
+After downloading the latest version of Python (3.12.4 as of August 2024)
 1. Download main.py
 2. Run main.py using your favorite method
  
 #### Command Prompt Method
+*Ensure Python is installed*
 ```sh
 python --version
 ```
@@ -41,14 +42,13 @@ or
 ```sh
 py --version
 ```
-*Ensure Python is installed*
 
+*Navigate to main.py directory*
 ```sh
 cd C:\Users\YourUser\DownloadLocation
 ```
-*Navigate to main.py directory*
 
+*Run main.py*
 ```sh
 python main.py
 ```
-*Run main.py*
